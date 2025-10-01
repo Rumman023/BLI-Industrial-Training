@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'createIDCardPage.dart'; 
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 void main() {
   runApp(const MyApp());
@@ -18,18 +21,74 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: const Color(0xFFE6EFEA),
+        appBar: AppBar(
+        title: const Text('ID Card'),
+        backgroundColor: Colors.grey,
+        ),
         body: const SafeArea(
           child: Center(
             child: IDCard(),
           ),
         ),
+        drawer: Drawer(
+  child: ListView(
+    padding: EdgeInsets.zero,
+    children: [
+      const DrawerHeader(
+        decoration: BoxDecoration(
+          color: Colors.grey,
+        ),
+        child: Text(
+          'Menu',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+          ),
+        ),
+      ),
+
+      Builder(
+        builder: (context) {
+          return ListTile(
+            leading: const Icon(Icons.card_membership),
+            title: const Text('Create your ID card'),
+            onTap: () {
+              Navigator.pop(context);
+              // Navigate to create page
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const CreateIDCardPage(),
+                ),
+              );
+            },
+          );
+        }
+      ),
+    ],
+  ),
+),
       ),
     );
   }
 }
 
 class IDCard extends StatelessWidget {
-  const IDCard({super.key});
+  final File? photoFile;
+  final String? studentID;
+  final String? studentName;
+  final String? program;
+  final String? department;
+  final String? country;
+
+  const IDCard({
+    super.key,
+    this.photoFile,
+    this.studentID,
+    this.studentName,
+    this.program,
+    this.department,
+    this.country,
+  });
 
   static const String photo = 'assets/images/profile.JPG';
   static const String logo = 'assets/images/IUT_logo.png';
@@ -116,7 +175,14 @@ class IDCard extends StatelessWidget {
                               border: Border.all(color: kDarkGreen, width: 6),
                             ),
                             child: ClipRRect(
-                              child: Image.asset(
+                              child: photoFile != null
+                                  ? Image.file(
+                                      photoFile!,
+                                      width: 130,
+                                      height: 150,
+                                      fit: BoxFit.cover,
+                                    )
+                                : Image.asset(
                                 photo,
                                 width: 130,
                                 height: 150,
@@ -174,7 +240,7 @@ class IDCard extends StatelessWidget {
                                       ),
                                       const SizedBox(width: 16),
                                       Text(
-                                        '210041131',
+                                        studentID ?? '210041131',
                                         style: GoogleFonts.poppins(
                                           color: Colors.white,
                                           fontWeight: FontWeight.w700,
@@ -207,7 +273,7 @@ class IDCard extends StatelessWidget {
                                 const SizedBox(height: 4),
 
                                 Text(
-                                  'RUMMAN ADIB',
+                                  studentName ?? 'RUMMAN ADIB',
                                   style: GoogleFonts.poppins(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w800,
@@ -233,7 +299,7 @@ class IDCard extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      'B.Sc. in CSE',
+                                      program ??'B.Sc. in CSE',
                                       style: GoogleFonts.poppins(
                                         fontSize: 14,
                                         color: kDarkGreen,
@@ -260,7 +326,7 @@ class IDCard extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      'CSE',
+                                      department ?? 'CSE',
                                       style: GoogleFonts.poppins(
                                         fontSize: 14,
                                         color: kDarkGreen,
@@ -280,7 +346,7 @@ class IDCard extends StatelessWidget {
                                         size: 18, color: Colors.black87),
                                     const SizedBox(width: 8),
                                     Text(
-                                      'Bangladesh',
+                                      country ?? 'Bangladesh',
                                       style: GoogleFonts.poppins(
                                         fontSize: 14,
                                         color: kDarkGreen,
